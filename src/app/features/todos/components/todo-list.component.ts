@@ -3,11 +3,12 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Todo } from '../models/todo.model';
 import { TodoService } from '../services/todo.service';
+import { PriorityPipe } from '../../../shared/pipes/priority.pipe';
 
 @Component({
   selector: 'app-todo-list',
   standalone: true,
-  imports: [CommonModule, FormsModule],
+  imports: [CommonModule, FormsModule, PriorityPipe],
   template: `
     <div class="max-w-4xl mx-auto">
       <h2 class="text-3xl font-bold mb-6">Mes Todos</h2>
@@ -84,14 +85,15 @@ import { TodoService } from '../services/todo.service';
                 }
                 <div class="flex justify-between items-center mt-2">
                   <span
-                    class="text-xs px-2 py-1 rounded"
-                    [ngClass]="{
-                      'bg-red-100 text-red-800': todo.priority === 'high',
-                      'bg-yellow-100 text-yellow-800': todo.priority === 'medium',
-                      'bg-green-100 text-green-800': todo.priority === 'low',
-                    }"
+                    class="px-2 py-1 text-xs font-semibold rounded-full"
+                    [class.bg-red-100]="todo.priority === 'high'"
+                    [class.text-red-800]="todo.priority === 'high'"
+                    [class.bg-yellow-100]="todo.priority === 'medium'"
+                    [class.text-yellow-800]="todo.priority === 'medium'"
+                    [class.bg-green-100]="todo.priority === 'low'"
+                    [class.text-green-800]="todo.priority === 'low'"
                   >
-                    {{ todo.priority | titlecase }}
+                    {{ todo.priority | priority }}
                   </span>
                   <button
                     (click)="updateStatus(todo.id, 'in-progress')"

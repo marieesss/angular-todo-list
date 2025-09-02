@@ -1,4 +1,4 @@
-import { inject, Injectable, signal } from '@angular/core';
+import { computed, effect, inject, Injectable, signal } from '@angular/core';
 import { Observable, of, throwError, delay, tap } from 'rxjs';
 import { User, LoginRequest, RegisterRequest } from '../models/user.model';
 import { LocalStorageService } from '../../../infrastructure/localstorage/localstorage.service';
@@ -36,12 +36,20 @@ export class AuthService {
     'user@example.com': 'user123',
   };
 
+  public isAdmin = computed(() => this.currentUser()?.role === 'admin');
+
+  public canEditTodos = computed(
+    () => this.currentUser() && (this.isAdmin() || this.currentUser()?.role === 'user')
+  );
+
   constructor() {
-    // Vérifier s'il y a un utilisateur en session
-    const savedUser = this.localStorageService.getItem('currentUser');
-    if (savedUser) {
-      this.currentUser.set(JSON.parse(savedUser));
-    }
+    effect(() => {
+      // Vérifier s'il y a un utilisateur en session
+      const savedUser = this.localStorageService.getItem('currentUser');
+      if (savedUser) {
+        this.currentUser.set(JSON.parse(savedUser));
+      }
+    });
   }
 
   login(credentials: LoginRequest): Observable<User> {
