@@ -119,14 +119,15 @@ import { PriorityPipe } from '../../../shared/pipes/priority.pipe';
                 }
                 <div class="flex justify-between items-center mt-2">
                   <span
-                    class="text-xs px-2 py-1 rounded"
-                    [ngClass]="{
-                      'bg-red-100 text-red-800': todo.priority === 'high',
-                      'bg-yellow-100 text-yellow-800': todo.priority === 'medium',
-                      'bg-green-100 text-green-800': todo.priority === 'low',
-                    }"
+                    class="px-2 py-1 text-xs font-semibold rounded-full"
+                    [class.bg-red-100]="todo.priority === 'high'"
+                    [class.text-red-800]="todo.priority === 'high'"
+                    [class.bg-yellow-100]="todo.priority === 'medium'"
+                    [class.text-yellow-800]="todo.priority === 'medium'"
+                    [class.bg-green-100]="todo.priority === 'low'"
+                    [class.text-green-800]="todo.priority === 'low'"
                   >
-                    {{ todo.priority | titlecase }}
+                    {{ todo.priority | priority }}
                   </span>
                   <button
                     (click)="updateStatus(todo.id, 'done')"
@@ -151,8 +152,16 @@ import { PriorityPipe } from '../../../shared/pipes/priority.pipe';
                   <p class="text-gray-600 text-sm mt-1 line-through">{{ todo.description }}</p>
                 }
                 <div class="flex justify-between items-center mt-2">
-                  <span class="text-xs px-2 py-1 rounded bg-green-100 text-green-800">
-                    {{ todo.priority | titlecase }}
+                  <span
+                    class="px-2 py-1 text-xs font-semibold rounded-full"
+                    [class.bg-red-100]="todo.priority === 'high'"
+                    [class.text-red-800]="todo.priority === 'high'"
+                    [class.bg-yellow-100]="todo.priority === 'medium'"
+                    [class.text-yellow-800]="todo.priority === 'medium'"
+                    [class.bg-green-100]="todo.priority === 'low'"
+                    [class.text-green-800]="todo.priority === 'low'"
+                  >
+                    {{ todo.priority | priority }}
                   </span>
                   <button (click)="deleteTodo(todo.id)" class="text-red-600 hover:text-red-800">
                     Supprimer
