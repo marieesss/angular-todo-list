@@ -1,5 +1,5 @@
 import { inject, Injectable, signal } from '@angular/core';
-import { Observable, of, throwError, delay } from 'rxjs';
+import { Observable, of, throwError, delay, tap } from 'rxjs';
 import { User, LoginRequest, RegisterRequest } from '../models/user.model';
 import { LocalStorageService } from '../../../infrastructure/localstorage/localstorage.service';
 
@@ -9,6 +9,7 @@ import { LocalStorageService } from '../../../infrastructure/localstorage/locals
 export class AuthService {
   private currentUser = signal<User | null>(null);
   public currentUser$ = this.currentUser.asReadonly();
+
   private localStorageService = inject(LocalStorageService);
 
   // Mock data - utilisateurs de test
@@ -49,7 +50,10 @@ export class AuthService {
 
     if (user && password === credentials.password) {
       // Simuler un délai réseau
-      return of(user).pipe(delay(500));
+      return of(user).pipe(
+        delay(500),
+        tap(u => this.setCurrentUser(u))
+      );
     } else {
       return throwError(() => new Error('Email ou mot de passe incorrect'));
     }
@@ -81,7 +85,7 @@ export class AuthService {
 
   logout(): void {
     this.currentUser.set(null);
-    localStorage.removeItem('currentUser');
+    this.localStorageService.removeItem('currentUser');
   }
 
   getCurrentUser(): User | null {
