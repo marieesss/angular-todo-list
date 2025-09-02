@@ -1,6 +1,7 @@
-import { Injectable, signal } from '@angular/core';
+import { inject, Injectable, signal } from '@angular/core';
 import { Observable, of, throwError, delay } from 'rxjs';
 import { User, LoginRequest, RegisterRequest } from '../models/user.model';
+import { LocalStorageService } from '../../../infrastructure/localstorage/localstorage.service';
 
 @Injectable({
   providedIn: 'root',
@@ -8,6 +9,7 @@ import { User, LoginRequest, RegisterRequest } from '../models/user.model';
 export class AuthService {
   private currentUser = signal<User | null>(null);
   public currentUser$ = this.currentUser.asReadonly();
+  private localStorageService = inject(LocalStorageService);
 
   // Mock data - utilisateurs de test
   private users: User[] = [
@@ -35,7 +37,7 @@ export class AuthService {
 
   constructor() {
     // Vérifier s'il y a un utilisateur en session
-    const savedUser = localStorage.getItem('currentUser');
+    const savedUser = this.localStorageService.getItem('currentUser');
     if (savedUser) {
       this.currentUser.set(JSON.parse(savedUser));
     }
